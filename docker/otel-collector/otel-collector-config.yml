@@ -1,0 +1,42 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+                allowed_origins:
+                  - "http://*"
+                  - "https://*"
+
+exporters:
+  debug:
+    verbosity: "detailed"
+ # Data sources: metrics
+  prometheus:
+    endpoint: "0.0.0.0:9464"
+    
+  # Data sources: metrics
+  # prometheusremotewrite:
+  #   endpoint: http://prometheus:9090/api/prom/push
+    # When using the official Prometheus (running via Docker)
+    # endpoint: 'http://prometheus:9090/api/v1/write', add:
+    # tls:
+    #   insecure: true
+
+processors:
+  batch:
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug] 
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus, debug] 
+    logs:
+      receivers: [otlp]
+      exporters: [debug] 
