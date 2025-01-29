@@ -16,4 +16,4 @@ Spring and OpenTelemetry example
 > localhost:9090
 
 ## Check metrics
->curl -X POST http://localhost:4318/v1/metrics
+> curl -i -H "Accept: application/json" -X POST http://localhost:4318/v1/metrics

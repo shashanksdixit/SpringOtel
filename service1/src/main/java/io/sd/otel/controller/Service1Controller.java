@@ -14,17 +14,17 @@ import io.opentelemetry.api.metrics.Meter;
 
 @RestController
 @RequestMapping("/service1")
-public class Service1AController {
+public class Service1Controller {
 
     private final RestTemplate restTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(Service1AController.class);
+    private static final Logger logger = LoggerFactory.getLogger(Service1Controller.class);
 
     @Value("${service.2.url}")
     private String service2Url;
 
     private final OpenTelemetry openTelemetry;
 
-    public Service1AController(RestTemplateBuilder restTemplateBuilder, OpenTelemetry openTelemetry) {
+    public Service1Controller(RestTemplateBuilder restTemplateBuilder, OpenTelemetry openTelemetry) {
         this.restTemplate = restTemplateBuilder.build();
         this.openTelemetry = openTelemetry;
     }
@@ -32,6 +32,7 @@ public class Service1AController {
     @GetMapping("/process")
     public String processRequest() {
         logger.info("Service-1 received request");
+        addCount();
         String response = restTemplate.getForObject(service2Url + "/service2/process", String.class);
         logger.info("Service-1 received response from Service-2: {}", response);
         return "Service-1 -> " + response;
@@ -39,19 +40,24 @@ public class Service1AController {
 
     @GetMapping("/test")
     public String test() {
-        Meter meter = openTelemetry.getMeter("service1");
-        meter.counterBuilder("service1.requests.total").build().add(1);
+        logger.info("Service1 - Test");
+        addCount();
         logger.info("Service-1 test endpoint called");
         return "Test : Service1 is UP and Running";
     }
 
     @GetMapping("/test2")
     public String test2() {
-        Meter meter = openTelemetry.getMeter("service1");
-        meter.counterBuilder("service1.requests.total").build().add(1);
+        logger.info("Service1 - Test");
+        addCount();
         logger.info("Service-1 test2 endpoint called");
         return "Test2 : Service1 is UP and Running";
     }
 
-    
+    private void addCount() {
+        Meter meter = openTelemetry.getMeter("service1");
+        logger.debug("Service1 - Adding to the resquest counter");
+        meter.counterBuilder("service1.requests.total").build().add(1);
+    }
+
 }
