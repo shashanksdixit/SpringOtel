@@ -33,8 +33,14 @@ exporters:
 processors:
   batch:
 
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
 
 service:
+  extensions: [health_check, pprof, zpages]
   pipelines:
     traces:
       receivers: [otlp]

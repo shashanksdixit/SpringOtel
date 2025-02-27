@@ -1,3 +1,4 @@
+// todo - update
 # SpringOtel
 Spring and OpenTelemetry example
 
@@ -17,3 +18,12 @@ Spring and OpenTelemetry example
 
 ## Check metrics
 > curl -i -H "Accept: application/json" -X POST http://localhost:4318/v1/metrics
+
+### Docker commands 
+[In case if you need to test using curl command]
+docker run --rm -it \
+  --pid container:otel-collector \
+  --network container:otel-collector \
+    ubuntu:latest
+apt-get update
+apt-get install curl
